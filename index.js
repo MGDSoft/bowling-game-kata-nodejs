@@ -1,5 +1,45 @@
 const {BonusSpareCalc, BonusLastRoundCalc, BonusStrikeCalc} = require("./calculator")
 
+class Game {
+  rolls = []
+  
+  roll(pinsKnocked) {
+    if (
+      this.rolls.length === 0 ||
+      this.getCurrentRoll().isFinished()
+    ) {
+      this.createNewRoll()
+    }
+    
+    this.getCurrentRoll().setNextPinsKnocked(pinsKnocked)
+  }
+
+  score() {
+    let score = 0
+    const bonusCalculator = new BonusLastRoundCalc(new BonusSpareCalc(new BonusStrikeCalc()))
+    this.rolls.forEach((roll) => {
+      bonusCalculator.setState(this.rolls, roll)
+
+      score += roll.getAllPinsKnocked()
+      score += bonusCalculator.calcBonusTotal()
+    })
+    
+    return score
+  }
+
+  createNewRoll() {
+    if (this.rolls.length >= 10) {
+      throw new Error('Max rounds are 10')
+    }
+
+    this.rolls.push(new Roll(this.rolls.length + 1))
+  }
+
+  getCurrentRoll() {
+    return this.rolls[this.rolls.length - 1]
+  }
+}
+
 class Roll {
   roundNumber = null
 
@@ -67,46 +107,6 @@ class Roll {
     } else {
       throw new Error('Max 2/3 throws allowed per round')
     }
-  }
-}
-
-class Game {
-  rolls = []
-  
-  roll(pinsKnocked) {
-    if (
-      this.rolls.length === 0 ||
-      this.getCurrentRoll().isFinished()
-    ) {
-      this.createNewRoll()
-    }
-    
-    this.getCurrentRoll().setNextPinsKnocked(pinsKnocked)
-  }
-
-  score() {
-    let score = 0
-    const bonusCalculator = new BonusLastRoundCalc(new BonusSpareCalc(new BonusStrikeCalc()))
-    this.rolls.forEach((roll) => {
-      bonusCalculator.setState(this.rolls, roll)
-
-      score += roll.getAllPinsKnocked()
-      score += bonusCalculator.calcBonusTotal()
-    })
-    
-    return score
-  }
-
-  createNewRoll() {
-    if (this.rolls.length >= 10) {
-      throw new Error('Max rounds are 10')
-    }
-
-    this.rolls.push(new Roll(this.rolls.length + 1))
-  }
-
-  getCurrentRoll() {
-    return this.rolls[this.rolls.length - 1]
   }
 }
 
