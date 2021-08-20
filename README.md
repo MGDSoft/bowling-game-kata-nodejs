@@ -1,6 +1,6 @@
  Bowling Game Kata 
 =============
-https://kata-log.rocks/bowling-game-kata **Instructions are copied from the website**. Thanks to Juan Gómez to share this funny game
+https://kata-log.rocks/bowling-game-kata **Instructions are copied from the website**. Thanks to Juan Gómez for share this funny game
 
 Bowling Rules
 ----------------------
